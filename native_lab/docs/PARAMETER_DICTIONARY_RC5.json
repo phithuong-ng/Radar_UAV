@@ -1,0 +1,968 @@
+[
+  {
+    "group": "Phiên",
+    "key": "seed",
+    "unit": "Không đơn vị; số nguyên",
+    "meaning": "Seed đặt trạng thái bộ sinh số ngẫu nhiên cho mô phỏng. Không phải mức nhiễu.",
+    "practice": "Ví dụ 9201; đổi seed cần dataset mới."
+  },
+  {
+    "group": "Phiên",
+    "key": "dt",
+    "unit": "s",
+    "meaning": "Khoảng thời gian giữa hai frame; tốc độ cập nhật UAV là 1/dt.",
+    "practice": "Ví dụ 0.64; đổi sẽ co giãn thời gian waypoint."
+  },
+  {
+    "group": "Phiên",
+    "key": "frames",
+    "unit": "Số frame; số nguyên",
+    "meaning": "Bao gồm cả frame t=0; thời điểm cuối=(frames−1)×dt.",
+    "practice": "RC5 kiểm tra 2…20000, không phải giới hạn MATLAB nói chung."
+  },
+  {
+    "group": "Phiên",
+    "key": "bounds_enu_m",
+    "unit": "m; ma trận 3×2",
+    "meaning": "Các hàng lần lượt là [Emin,Emax], [Nmin,Nmax], [Umin,Umax]. Còn dùng để tính mật độ clutter prior của tracker.",
+    "practice": "Ví dụ [[-3000,5000],[-4000,2000],[20,500]]. Không phải range radar."
+  },
+  {
+    "group": "Radar",
+    "key": "position_enu_m",
+    "unit": "m; [E,N,U]",
+    "meaning": "Vị trí anten trong hệ ENU chung, không nhất thiết ở gốc.",
+    "practice": "[0,-500,12]; kiểm tra AGL anten >0."
+  },
+  {
+    "group": "Radar",
+    "key": "heading_enu_deg",
+    "unit": "deg",
+    "meaning": "Hướng trục anten theo quy ước ứng dụng: 0 Đông, 90 Bắc, 180 Tây.",
+    "practice": "Đổi hướng xoay chùm ngay; muốn đo mới phải mô phỏng lại."
+  },
+  {
+    "group": "Radar",
+    "key": "tilt_deg",
+    "unit": "deg",
+    "meaning": "Góc ngẩng/định hướng pitch anten qua phép đổi trục của adapter.",
+    "practice": "Thử 0→10 và nhìn 3D. Không thay độ cao anten."
+  },
+  {
+    "group": "Radar",
+    "key": "roll_deg",
+    "unit": "deg",
+    "meaning": "Góc lăn của khung anten; làm đổi hướng hai trục bề rộng chùm.",
+    "practice": "Thử 0→15 với FOV ngang/đứng khác nhau; xem 3D."
+  },
+  {
+    "group": "Radar",
+    "key": "mode",
+    "unit": "Chuỗi; không đơn vị",
+    "meaning": "Chế độ radar Generic: No scanning / Rotator / Sector / Raster.",
+    "practice": "RX cố định Raster; dòng này được ẩn khi dùng hồ sơ RX."
+  },
+  {
+    "group": "Radar",
+    "key": "scan_technology",
+    "unit": "Chuỗi",
+    "meaning": "Generic chọn Mechanical / Electronic / Mechanical and electronic.",
+    "practice": "RX cố định Electronic; dòng này được ẩn. Không gán HasScanLoss vì chưa triển khai Custom scanning."
+  },
+  {
+    "group": "Radar",
+    "key": "update_every_steps",
+    "unit": "Số bước nguyên ≥1",
+    "meaning": "Khoảng cách giữa các lượt đo tính bằng frame; khoảng thời gian đo=N×dt.",
+    "practice": "1→4 làm radar cập nhật thưa hơn; không làm PRF giảm bốn lần."
+  },
+  {
+    "group": "Radar",
+    "key": "scan_rate_deg_s",
+    "unit": "deg/s",
+    "meaning": "Giới hạn tốc độ quét phương vị cơ khí.",
+    "practice": "Chỉ chế độ quét có Mechanical; 20 deg/s không đảm bảo một vòng quét mất thời gian như mọi loại radar thật."
+  },
+  {
+    "group": "Radar",
+    "key": "elevation_scan_rate_deg_s",
+    "unit": "deg/s",
+    "meaning": "Giới hạn tốc độ quét góc đứng cơ khí.",
+    "practice": "Có tác dụng theo mẫu quét native và trục đang quét; xem Raster."
+  },
+  {
+    "group": "Radar",
+    "key": "electronic_azimuth_limits_deg",
+    "unit": "deg; [min,max]",
+    "meaning": "RX: BIÊN vùng Search ngang của mỗi mặt. Generic: giới hạn điện tử đưa tới API. Góc trong khung anten, đơn vị độ.",
+    "practice": "RX [-45,45]; adapter trừ nửa chùm để tạo miền tâm quét. Focus dùng giới hạn riêng trong tab Radar → Thiết bị & nhiệm vụ."
+  },
+  {
+    "group": "Radar",
+    "key": "electronic_elevation_limits_deg",
+    "unit": "deg; [min,max]",
+    "meaning": "RX: BIÊN vùng Search đứng; khác tâm chùm. Generic giữ ý nghĩa giới hạn native.",
+    "practice": "RX [0,60]. Chỉnh [0,20] để thu hẹp vùng và giảm số hướng khi giữ nguyên chùm."
+  },
+  {
+    "group": "Radar",
+    "key": "azimuth_scan_limits_deg",
+    "unit": "deg; [min,max]",
+    "meaning": "Miền phương vị quét cơ khí tương đối với hướng lắp đặt.",
+    "practice": "[-60,60]; nhánh RC5 không gán cặp này cho Rotator."
+  },
+  {
+    "group": "Radar",
+    "key": "elevation_scan_limits_deg",
+    "unit": "deg; [min,max]",
+    "meaning": "Miền góc đứng quét cơ khí.",
+    "practice": "[-10,20]; dùng trong Sector/Raster khi có Mechanical."
+  },
+  {
+    "group": "Radar",
+    "key": "field_of_view_deg",
+    "unit": "deg; [ngang,đứng]",
+    "meaning": "Generic: bề rộng chùm đầy đủ. RX: bề rộng tối đa giả định; adapter chia đều vùng phủ thành các ô không vượt giá trị này.",
+    "practice": "Generic [120,60]; RX [30,20]. Đọc kích thước thực dùng và số hướng trong tab Radar → Thiết bị & nhiệm vụ. Không phải beamwidth hãng đã xác nhận."
+  },
+  {
+    "group": "Radar",
+    "key": "range_limits_m",
+    "unit": "m; [min,max]",
+    "meaning": "Cự ly xiên từ radar trong đó xét báo cáo.",
+    "practice": "Generic [50,8000]; RX [200,10000] là lựa chọn thử theo ngưỡng datasheet, không khẳng định vùng mù đúng 200 m."
+  },
+  {
+    "group": "Radar",
+    "key": "frequency_hz",
+    "unit": "Hz",
+    "meaning": "Tần số mang cho radar thống kê; tab IQ cũng lấy tần số này.",
+    "practice": "9.4e9 = 9.4 GHz. Không phải sample rate hoặc PRF; sửa không tự đổi waveform của radar thật."
+  },
+  {
+    "group": "Radar",
+    "key": "reference_range_m",
+    "unit": "m",
+    "meaning": "Cự ly cùng RCS tham chiếu xác định điều kiện Pd.",
+    "practice": "Generic 3000; RX 10000 với Pd=0.9 là GIẢ ĐỊNH, không phải số kiểm định hãng."
+  },
+  {
+    "group": "Radar",
+    "key": "reference_rcs_m2",
+    "unit": "m²",
+    "meaning": "RCS mục tiêu tham chiếu cho mô hình phát hiện.",
+    "practice": "0.01 m² = −20 dBsm; adapter đổi sang dBsm cho API."
+  },
+  {
+    "group": "Radar",
+    "key": "detection_probability",
+    "unit": "Xác suất 0…1, không đơn vị",
+    "meaning": "Pd tại điều kiện tham chiếu. Trong RC5 phải lớn hơn 0 và nhỏ hơn 1.",
+    "practice": "0.9→0.7; cần dataset mới. Không nhập 90."
+  },
+  {
+    "group": "Radar",
+    "key": "range_resolution_m",
+    "unit": "m",
+    "meaning": "Tham số độ phân giải cự ly của mô hình đo native.",
+    "practice": "15→30; không đồng nhất với sigma cự ly."
+  },
+  {
+    "group": "Radar",
+    "key": "azimuth_resolution_deg",
+    "unit": "deg",
+    "meaning": "Độ phân giải góc phương vị của mô hình đo.",
+    "practice": "1→2; cùng sai số góc có thể gây sai số ngang lớn hơn ở xa."
+  },
+  {
+    "group": "Radar",
+    "key": "elevation_resolution_deg",
+    "unit": "deg",
+    "meaning": "Độ phân giải góc đứng của mô hình đo.",
+    "practice": "2→4; có thể ảnh hưởng bất định độ cao; xem kết quả 3D."
+  },
+  {
+    "group": "Radar",
+    "key": "noise",
+    "unit": "true/false",
+    "meaning": "Bật/tắt nhiễu phép đo native.",
+    "practice": "Tắt không tự xóa bias/khúc xạ. Phải tạo dataset mới."
+  },
+  {
+    "group": "Radar",
+    "key": "range_bias_fraction",
+    "unit": "Tỷ lệ, không đơn vị",
+    "meaning": "Bias cự ly theo bội của RangeResolution.",
+    "practice": "0.2×15 m =3 m là tham số bias; không phải dịch mọi tọa độ East thêm 3 m."
+  },
+  {
+    "group": "Radar",
+    "key": "azimuth_bias_fraction",
+    "unit": "Tỷ lệ, không đơn vị",
+    "meaning": "Bias góc phương vị theo bội của AzimuthResolution.",
+    "practice": "0.2×1°=0.2°; hướng dịch điểm phụ thuộc vị trí mục tiêu."
+  },
+  {
+    "group": "Radar",
+    "key": "elevation_bias_fraction",
+    "unit": "Tỷ lệ, không đơn vị",
+    "meaning": "Bias góc đứng theo bội của ElevationResolution.",
+    "practice": "0.2×2°=0.4°; cần dataset mới để quan sát."
+  },
+  {
+    "group": "UAV và waypoint",
+    "key": "name",
+    "unit": "Chuỗi tên MATLAB hợp lệ",
+    "meaning": "Tên platform để chọn và hiện trên chú giải.",
+    "practice": "UAV_1; không trùng tên, không dùng dấu cách trong tên platform."
+  },
+  {
+    "group": "UAV và waypoint",
+    "key": "rcs_m2",
+    "unit": "m²",
+    "meaning": "RCS hằng của UAV; không phải khối lượng, kích thước hay công suất phát.",
+    "practice": "0.01→0.02; biểu tượng giữ cùng kích thước, detections có thể đổi sau mô phỏng."
+  },
+  {
+    "group": "UAV và waypoint",
+    "key": "birth_scan",
+    "unit": "Chỉ số frame; bắt đầu từ 1",
+    "meaning": "Frame đầu UAV được coi là hoạt động trong cảnh/đánh giá.",
+    "practice": "Frame k ứng với (k−1)dt. Không đồng nghĩa sự kiện cất cánh có động lực học."
+  },
+  {
+    "group": "UAV và waypoint",
+    "key": "death_scan",
+    "unit": "Chỉ số frame",
+    "meaning": "Frame cuối UAV hoạt động; không được vượt frames.",
+    "practice": "Giảm để thử mục tiêu biến mất. Không phải lệnh UAV thật hạ cánh."
+  },
+  {
+    "group": "UAV và waypoint",
+    "key": "speed_limit_mps",
+    "unit": "m/s",
+    "meaning": "Ngưỡng kiểm tra tốc độ quỹ đạo; không ép quỹ đạo giảm tốc.",
+    "practice": "150; tăng ngưỡng chỉ cho phép tốc độ lớn hơn qua kiểm tra, không thay chuyển động."
+  },
+  {
+    "group": "UAV và waypoint",
+    "key": "waypoints_enu_m",
+    "unit": "m; mỗi dòng [E,N,U]",
+    "meaning": "Các mốc vị trí theo thứ tự thời gian.",
+    "practice": "Bảng có 3 cột số; sửa từng ô hoặc kéo vòng tròn trong 2D."
+  },
+  {
+    "group": "UAV và waypoint",
+    "key": "arrival_s",
+    "unit": "s; một thời điểm mỗi waypoint",
+    "meaning": "Thời điểm phải đi qua từng mốc tính từ t=0.",
+    "practice": "Bắt đầu 0, tăng nghiêm ngặt; cuối đúng (frames−1)dt. Đây là thời điểm, không phải thời gian chặng."
+  },
+  {
+    "group": "UAV và waypoint",
+    "key": "AGL (cột tính/đặt)",
+    "unit": "m",
+    "meaning": "Cao trên bề mặt DEM ở waypoint; sửa cột này sẽ đổi tọa độ để đạt AGL.",
+    "practice": "Nhập 150. AGL giữa các mốc không nhất thiết hằng."
+  },
+  {
+    "group": "UAV và waypoint",
+    "key": "LLA (hộp nhập)",
+    "unit": "[deg,deg,m]",
+    "meaning": "Vĩ độ, kinh độ và cao ellipsoid h của waypoint đang chọn.",
+    "practice": "Dùng số thập phân. Bảng LLA phía dưới chỉ đọc; dùng nút Nhập waypoint LLA để sửa."
+  },
+  {
+    "group": "Địa hình",
+    "key": "dem_file",
+    "unit": "Đường dẫn tệp",
+    "meaning": "Raster cao độ một band, tọa độ địa lý WGS84. Không phải ảnh màu bản đồ.",
+    "practice": "Chọn GeoTIFF đúng CRS/mốc cao độ; DEM chiếu UTM cần chuyển trước khi nhập."
+  },
+  {
+    "group": "Địa hình",
+    "key": "geoid_offset_m",
+    "unit": "m",
+    "meaning": "N hằng dùng trong h=H+N cho toàn cảnh.",
+    "practice": "0 là giả định demo; phải xác minh theo dữ liệu khảo sát khi đo thật."
+  },
+  {
+    "group": "Địa hình",
+    "key": "datum_note",
+    "unit": "Văn bản",
+    "meaning": "Ghi nguồn/mốc cao độ và giả định dữ liệu.",
+    "practice": "Ghi chú không tự hiệu chuẩn số đo hoặc chuyển CRS."
+  },
+  {
+    "group": "Địa hình",
+    "key": "terrain_los",
+    "unit": "true/false",
+    "meaning": "Dùng Mapping LOS để loại mục tiêu/điểm tĩnh bị địa hình che khỏi danh sách đưa tới radar.",
+    "practice": "Không tự mô phỏng cây, nhà hoặc multipath ngoài thông tin raster."
+  },
+  {
+    "group": "Địa hình",
+    "key": "effective_earth_factor",
+    "unit": "Tỷ lệ không đơn vị",
+    "meaning": "Bán kính Trái Đất hiệu dụng chia bán kính thực trong LOS; mô hình khúc xạ đơn giản.",
+    "practice": "Mặc định 4/3 trong mã. Chỉ tác động tới LOS/viewshed tương ứng, không phải cấu hình toàn bộ khí quyển radar native."
+  },
+  {
+    "group": "Địa hình",
+    "key": "minimum_agl_m",
+    "unit": "m",
+    "meaning": "Mức hở bề mặt tối thiểu khi kiểm tra quỹ đạo tại các mẫu đang hoạt động.",
+    "practice": "1; kiểm tra rời rạc không phải chứng nhận tránh va chạm liên tục ngoài thực tế."
+  },
+  {
+    "group": "Địa hình",
+    "key": "viewshed_target_agl_m",
+    "unit": "m",
+    "meaning": "Độ cao giả định của mục tiêu trên bề mặt khi tính bản đồ khả kiến.",
+    "practice": "100→150; không tự đổi AGL các UAV đã cấu hình."
+  },
+  {
+    "group": "Địa hình",
+    "key": "origin_lla",
+    "unit": "[deg,deg,m]",
+    "meaning": "Gốc hệ ENU. Sửa qua nút Đổi mốc ENU hoặc khi chọn DEM.",
+    "practice": "Không phải tọa độ UAV; h của gốc là cao ellipsoid."
+  },
+  {
+    "group": "Clutter",
+    "key": "false_alarms",
+    "unit": "true/false",
+    "meaning": "Bật báo động giả ngẫu nhiên của radar thống kê.",
+    "practice": "false→true; chưa đồng nghĩa bật mọi loại clutter vật lý."
+  },
+  {
+    "group": "Clutter",
+    "key": "pfa",
+    "unit": "Xác suất không đơn vị",
+    "meaning": "Xác suất báo giả theo ô/phép thử native.",
+    "practice": "1e-6 =0.000001; tăng lên 1e-5 để thử. Cần sinh lại dataset."
+  },
+  {
+    "group": "Clutter",
+    "key": "scatterers_enabled",
+    "unit": "true/false",
+    "meaning": "Bật các platform phản xạ điểm đứng yên.",
+    "practice": "Dấu × hiển thị vị trí cấu hình; không bảo đảm radar phát hiện chúng ở mọi scan."
+  },
+  {
+    "group": "Clutter",
+    "key": "scatterers",
+    "unit": "[m,m,m,m²] mỗi dòng",
+    "meaning": "[East,North,AGL,RCS] của từng phản xạ tĩnh.",
+    "practice": "Cột thứ ba là AGL, KHÔNG phải Up. Ví dụ [1200,-650,20,0.02]."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "method",
+    "unit": "Mã/tên lựa chọn",
+    "meaning": "Tổ hợp họ tracker, mô hình chuyển động và filter.",
+    "practice": "Tên _SPH giữ tương thích project gốc; RC5 vẫn đưa vào phép đo Cartesian ENU."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "gnn_assignment",
+    "unit": "Chuỗi",
+    "meaning": "Bộ giải gán của GNN: Jonker-Volgenant, Munkres, Auction, MatchPairs, Custom.",
+    "practice": "Chọn bằng dropdown. Trên cảnh dễ, nhiều solver có thể cho cùng kết quả."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "gnn_logic",
+    "unit": "Chuỗi",
+    "meaning": "History hoặc Score của GNN.",
+    "practice": "Chọn Track management; bảng chỉ hiện ngưỡng tương ứng."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "jpda_logic",
+    "unit": "Chuỗi",
+    "meaning": "History hoặc Integrated của JPDA.",
+    "practice": "Integrated quản lý xác suất tồn tại, không dùng cặp [M,N] cho ngưỡng xác nhận/xóa."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "assignment_threshold",
+    "unit": "Chi phí chuẩn hóa; không phải m",
+    "meaning": "Ngưỡng gate chi tiết. Nhãn bình phương trong UI là cách ghi giản lược, đọc giá trị chi phí native theo filter.",
+    "practice": "25→16 hoặc 36. Tăng gate có thể giữ mục tiêu cơ động nhưng tăng gán nhầm."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "coarse_gate_multiplier",
+    "unit": "Tỷ lệ không đơn vị ≥1",
+    "meaning": "Hệ số tạo ngưỡng sơ bộ: coarse=gate×hệ số.",
+    "practice": "GNN/JPDA dùng [gate,coarse]; TOMHT hiện dùng [0.3g,0.7g,g,coarse]."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "measurement_variance_scale",
+    "unit": "Tỷ lệ không đơn vị >0",
+    "meaning": "Nhân toàn bộ R trước khi đưa detection vào tracker, không sửa R của dataset lưu.",
+    "practice": "1→4 nghĩa sigma nhân 2. Phép đo giữ nguyên; chạy lại tracker."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "metric_cutoff_m",
+    "unit": "m",
+    "meaning": "Ngưỡng cắt khoảng cách của OSPA/GOSPA.",
+    "practice": "300; đổi metric làm thay thước so sánh, không làm đường bám tốt hơn."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "max_tracks",
+    "unit": "Số track nguyên",
+    "meaning": "Giới hạn số track bộ bám được quản lý.",
+    "practice": "384 trong cấu hình gốc; không phải số UAV truth. Clutter có thể sinh thêm track."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "max_initialization_seconds",
+    "unit": "s thời gian tính trên máy",
+    "meaning": "Ngưỡng thời gian cho lần đầu gọi native tracker trong vòng chạy.",
+    "practice": "120; chỉ là ngưỡng kiểm tra sau khi lời gọi trả về, không là hard timeout ngắt API."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "max_scan_seconds",
+    "unit": "s thời gian tính trên máy",
+    "meaning": "Ngưỡng kiểm tra mỗi bước sau khởi tạo.",
+    "practice": "20; không phải dt hoặc thời gian quay radar."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "max_run_seconds",
+    "unit": "s thời gian tính cộng dồn",
+    "meaning": "Ngưỡng cộng dồn ngoài lần gọi khởi tạo theo nl_timing_guard.",
+    "practice": "180; không phải thời lượng cảnh mô phỏng."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "filter_seed",
+    "unit": "Số nguyên không đơn vị",
+    "meaning": "Seed riêng cho phần ngẫu nhiên của bộ lọc, đặc biệt PF.",
+    "practice": "9201; giữ cố định khi so tham số PF trên cùng dataset."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "tracker_properties_json",
+    "unit": "Đối tượng JSON",
+    "meaning": "Thuộc tính public bổ sung, áp sau các tham số thông thường.",
+    "practice": "Ví dụ {\"InitializationThreshold\":0.1} cho JPDA; thuộc tính sai/không phù hợp có thể lỗi."
+  },
+  {
+    "group": "Tracking: lựa chọn và tham số chung",
+    "key": "filter_properties_json",
+    "unit": "Đối tượng JSON",
+    "meaning": "Thuộc tính public bổ sung của filter, áp sau thiết lập adapter; không áp cho GM-PHD trong nhánh này.",
+    "practice": "Ví dụ {\"Alpha\":0.01} khi chọn UKF. Override có thể làm tham số tương ứng trên bảng không còn quyết định giá trị cuối."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "velocity_std_mps",
+    "unit": "m/s",
+    "meaning": "Độ lệch chuẩn vận tốc ngang ban đầu dùng trong P.",
+    "practice": "90; nói mức chưa biết vận tốc lúc tạo track, không phải vận tốc UAV."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "vertical_velocity_std_mps",
+    "unit": "m/s",
+    "meaning": "Độ lệch chuẩn vận tốc theo Up ban đầu.",
+    "practice": "10; độc lập với sigma vị trí."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "acceleration_std_mps2",
+    "unit": "m/s²",
+    "meaning": "Kích thích gia tốc cho CV/CT; adapter bình phương để dựng Q.",
+    "practice": "12; thành phần đứng được đặt bằng 0.5 lần thành phần ngang trong adapter hiện tại."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "jerk_std_mps3",
+    "unit": "m/s³",
+    "meaning": "Jerk là tốc độ thay đổi gia tốc, dùng làm kích thích của CA.",
+    "practice": "8; thành phần đứng dùng hệ số 0.5 trong adapter."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "turn_accel_std_degps2",
+    "unit": "deg/s²",
+    "meaning": "Độ lệch chuẩn gia tốc góc của mô hình CT.",
+    "practice": "3; khác tốc độ quay deg/s."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "initial_accel_std_mps2",
+    "unit": "m/s²",
+    "meaning": "Bất định gia tốc ban đầu cho CA.",
+    "practice": "20; nằm trong P, không phải Q jerk."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "initial_turn_std_degps",
+    "unit": "deg/s",
+    "meaning": "Bất định tốc độ quay ban đầu của CT.",
+    "practice": "8; không phải góc hướng anten."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "ukf_alpha",
+    "unit": "Không đơn vị",
+    "meaning": "Tham số phân bố các sigma point của UKF.",
+    "practice": "1e-3; đổi nhỏ có chủ đích, cùng R/Q/seed. Không phải tham số alpha của GOSPA."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "ukf_beta",
+    "unit": "Không đơn vị",
+    "meaning": "Tham số UKF về phân bố trạng thái dùng trong trọng số covariance.",
+    "practice": "2; không phải Beta mật độ sinh track của GNN Score."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "ukf_kappa",
+    "unit": "Không đơn vị",
+    "meaning": "Tham số scaling bổ sung của sigma point UKF.",
+    "practice": "0; giá trị hợp lệ còn phụ thuộc cấu trúc filter native."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "pf_particles",
+    "unit": "Số hạt nguyên",
+    "meaning": "Số mẫu dùng xấp xỉ phân bố trạng thái của PF.",
+    "practice": "1000→2000; tăng bộ nhớ/thời gian; không đảm bảo mọi metric đều cải thiện."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "pf_resampling",
+    "unit": "Chuỗi",
+    "meaning": "Cách lấy mẫu lại: Systematic, Multinomial, Residual, Stratified.",
+    "practice": "Thay thuật toán tái lấy mẫu; không thay số UAV hoặc tần suất radar đo."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "imm_cv_accel_std",
+    "unit": "m/s²",
+    "meaning": "Kích thích gia tốc của nhánh CV trong IMM.",
+    "practice": "1.5; khác acceleration_std_mps2 của một filter CV chạy độc lập."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "imm_ca_jerk_std",
+    "unit": "m/s³",
+    "meaning": "Kích thích jerk của nhánh CA trong IMM.",
+    "practice": "8; thứ tự bank IMM là CV, CA, CT."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "imm_ct_accel_std",
+    "unit": "m/s²",
+    "meaning": "Kích thích gia tốc của nhánh CT trong IMM.",
+    "practice": "5; kết hợp tham số gia tốc góc CT."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "imm_stay_probability",
+    "unit": "Xác suất không đơn vị",
+    "meaning": "Xác suất ở lại cùng mô hình, dùng khi imm_transition=[]. Native định nghĩa chuyển xác suất theo đơn vị thời gian.",
+    "practice": "0.94; không đơn giản là xác suất bất biến cho mọi dt."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "imm_transition",
+    "unit": "Ma trận xác suất 3×3",
+    "meaning": "Hàng i sang cột j theo thứ tự CV,CA,CT; mỗi hàng tổng 1.",
+    "practice": "[[0.8,0.1,0.1],[0.1,0.8,0.1],[0.1,0.1,0.8]]; [] quay lại tham số stay."
+  },
+  {
+    "group": "Tracking: trạng thái và độ bất định",
+    "key": "imm_initial_probabilities",
+    "unit": "Vector xác suất 3 phần tử",
+    "meaning": "Niềm tin ban đầu vào CV,CA,CT; không phải ma trận chuyển.",
+    "practice": "[0.4,0.3,0.3], tổng 1."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "confirmation_history",
+    "unit": "[số hit,số cập nhật]",
+    "meaning": "Ngưỡng xác nhận History theo cửa sổ gần nhất.",
+    "practice": "[2,3] hoặc [4,5]; không phải giây, không bảo đảm luôn phải chờ hết N bước."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "deletion_history",
+    "unit": "[số miss,số cập nhật]",
+    "meaning": "Ngưỡng xóa theo lịch sử; track tạm còn có quy tắc thất bại xác nhận.",
+    "practice": "[3,5] hoặc [5,8]; lớn hơn thường giữ track lâu hơn khi mất đo."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "score_confirmation",
+    "unit": "Điểm log-likelihood; không đơn vị vật lý",
+    "meaning": "Ngưỡng xác nhận của GNN Score.",
+    "practice": "15; không nhập % hoặc [M,N]."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "score_deletion",
+    "unit": "Điểm score theo quy tắc native",
+    "meaning": "Ngưỡng xóa GNN Score, thường âm; liên quan mức giảm bằng chứng của track.",
+    "practice": "−8; không diễn giải như số miss hoặc giây. Xem help TrackLogic Score."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "pd_assumed",
+    "unit": "Xác suất không đơn vị",
+    "meaning": "Pd mà tracker giả định khi tính association/logic tương ứng.",
+    "practice": "0.9; không đổi Pd thật của dataset. Không dùng ở GNN History của adapter."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "clutter_expected_per_update",
+    "unit": "Số báo cáo kỳ vọng/lượt đo",
+    "meaning": "Prior số clutter trong miền bounds để quy đổi thành mật độ cho tracker.",
+    "practice": "2; đây là giả định cấu hình, không tự đếm đúng số báo giả từ truth."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "clutter_density_scale",
+    "unit": "Tỷ lệ không đơn vị",
+    "meaning": "Hệ số nhân mật độ clutter prior.",
+    "practice": "1; mật độ trong luồng Cartesian được tính trên thể tích bounds, đơn vị báo cáo/m³/lượt đo."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "birth_rate_per_second",
+    "unit": "Tốc độ sinh mục tiêu/giây theo mô hình",
+    "meaning": "Prior sinh track/đối tượng. GNN Score/TOMHT/JPDA Integrated đổi sang mật độ bằng dt đo và thể tích; PHD nhận BirthRate trực tiếp.",
+    "practice": "0.15; không phải birth_scan của UAV."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "jpda_max_events",
+    "unit": "Số sự kiện nguyên hoặc chuỗi all",
+    "meaning": "Số sự kiện gán tối đa trong k-best JPDA; all ánh xạ MaxNumEvents=Inf.",
+    "practice": "50→100 hoặc all; full enumeration có thể rất tốn tính khi cảnh đông."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "existence_confirmation",
+    "unit": "Xác suất không đơn vị",
+    "meaning": "Ngưỡng tồn tại để xác nhận JPDA Integrated.",
+    "practice": "0.98; không phải Pd radar."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "existence_deletion",
+    "unit": "Xác suất không đơn vị",
+    "meaning": "Ngưỡng tồn tại để xóa JPDA Integrated.",
+    "practice": "1e-5; nhỏ hơn thường giữ giả thuyết tồn tại lâu hơn theo mô hình."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "tomht_max_hypotheses",
+    "unit": "Số giả thuyết nguyên",
+    "meaning": "Giới hạn số giả thuyết toàn cục native xét/duy trì theo cấu hình.",
+    "practice": "12; tăng có thể tăng chi phí tổ hợp, không đảm bảo kết quả tốt hơn trên mọi cảnh."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "tomht_max_branches",
+    "unit": "Số nhánh nguyên",
+    "meaning": "Giới hạn nhánh track theo API TOMHT.",
+    "practice": "3; không phải số UAV tối đa của cảnh."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "tomht_history_scans",
+    "unit": "Số lượt lịch sử",
+    "meaning": "Độ dài lịch sử giữ cho xử lý giả thuyết.",
+    "practice": "3; khác với số frame không có radar cập nhật."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "tomht_confirmation",
+    "unit": "Điểm score không đơn vị vật lý",
+    "meaning": "Ngưỡng xác nhận của TOMHT.",
+    "practice": "12; xem trạng thái và score trong diagnostics, không đổi thành %."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "tomht_deletion",
+    "unit": "Điểm score theo quy tắc native",
+    "meaning": "Ngưỡng xóa nhánh/track của TOMHT.",
+    "practice": "−8; không phải cặp History."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "phd_death_rate",
+    "unit": "Xác suất theo 1 đơn vị thời gian; không đơn vị",
+    "meaning": "Native dùng hệ số sống sót (1−DeathRate)^Δt; Δt đo bằng s trong project. Không phải trực tiếp hazard s⁻¹ hoặc xác suất mất mỗi frame.",
+    "practice": "0.01; Δt=2 s cho hệ số sống sót 0.99²=0.9801. Dùng cho PHD và JPDA Integrated."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "phd_max_components",
+    "unit": "Số thành phần hỗn hợp",
+    "meaning": "Giới hạn số thành phần Gaussian của GM-PHD.",
+    "practice": "1200; khác max_tracks. Một mục tiêu có thể liên quan nhiều thành phần."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "phd_extraction",
+    "unit": "Trọng số/cường độ PHD; không đơn vị vật lý",
+    "meaning": "Ngưỡng trích xuất ước lượng từ hỗn hợp.",
+    "practice": "0.45; trọng số PHD không đồng nhất xác suất tồn tại của một Bernoulli track."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "phd_confirmation",
+    "unit": "Trọng số PHD",
+    "meaning": "Ngưỡng xác nhận track trong PHD.",
+    "practice": "0.65; không có nghĩa Pd=65%."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "phd_deletion_threshold",
+    "unit": "Trọng số PHD",
+    "meaning": "Ngưỡng loại thành phần yếu theo API.",
+    "practice": "0.0001; là pruning, khác History deletion."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "phd_merging_threshold",
+    "unit": "Ngưỡng khoảng cách chuẩn hóa",
+    "meaning": "Điều kiện gộp các thành phần hỗn hợp đủ gần theo native.",
+    "practice": "16; không phải 16 m."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "phd_birth_assignment_threshold",
+    "unit": "Chi phí/ngưỡng native",
+    "meaning": "Điều kiện dùng phép đo để bổ sung thành phần sinh mới.",
+    "practice": "25; tách biệt gate của GNN/JPDA."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "custom_initializer",
+    "unit": "Tên hàm MATLAB",
+    "meaning": "Hàm trên path nhận detection, trả filter native tương thích tracker.",
+    "practice": "Ví dụ initcvckf; Custom không tự chuyển mọi hệ state sang ENU."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "custom_position_indices",
+    "unit": "Ba chỉ số nguyên trong state",
+    "meaning": "Chỉ số phần tử trực tiếp chứa East,North,Up của filter custom.",
+    "practice": "[1,3,5] với state CV; mô hình khác phải xác minh đúng thứ tự."
+  },
+  {
+    "group": "Tracking: association và vòng đời",
+    "key": "custom_assignment_fcn",
+    "unit": "Tên hàm MATLAB",
+    "meaning": "Hàm theo giao diện CustomAssignmentFcn của trackerGNN.",
+    "practice": "Chỉ có tác dụng khi solver GNN=Custom; các phụ thuộc hàm phải còn trên path khi replay."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "sample_rate_hz",
+    "unit": "Hz = mẫu/s",
+    "meaning": "Tốc độ lấy mẫu tín hiệu thu/xử lý của bài IQ.",
+    "practice": "2e6; SampleRate/PRF phải nguyên. Không phải tần số sóng mang."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "prf_hz",
+    "unit": "Hz = xung/s",
+    "meaning": "Tần số lặp xung; PRI=1/PRF tính bằng s.",
+    "practice": "1000; khác update rate của tracker. Điều kiện echo phải nằm trong PRI đang mô phỏng."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "pulse_width_s",
+    "unit": "s",
+    "meaning": "Thời lượng một xung LFM.",
+    "practice": "20e-6 =20 µs; phải nhỏ hơn PRI."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "bandwidth_hz",
+    "unit": "Hz",
+    "meaning": "Độ rộng dải tần quét trong xung LFM.",
+    "practice": "1e6=1 MHz; không tự đặt RangeResolution của tab Radar."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "pulses",
+    "unit": "Số xung nguyên",
+    "meaning": "Số xung dùng trong khối xử lý Doppler.",
+    "practice": "16→32; RC5 kiểm tra 2…256, không phải giới hạn toolbox nói chung."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "array_elements",
+    "unit": "Số phần tử anten",
+    "meaning": "Số phần tử của ULA; khoảng cách phần tử đang cố định λ/2.",
+    "practice": "4→8; RC5 kiểm tra 2…64. Hình array beam thay đổi, không đổi anten radar thống kê."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "gamma_db",
+    "unit": "dB",
+    "meaning": "Gamma của mô hình constantGammaClutter mặt phẳng đồng nhất.",
+    "practice": "−20→−10; không phải RCS m² của một UAV."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "height_m",
+    "unit": "m",
+    "meaning": "Cao radar trên mặt phẳng trong bài IQ.",
+    "practice": "30; không lấy AGL anten từ DEM của cảnh."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "speed_mps",
+    "unit": "m/s",
+    "meaning": "Tốc độ platform radar trong bài IQ; hướng đang cố định trong mã.",
+    "practice": "0→10; không phải tốc độ UAV. Doppler clutter có thể thay đổi."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "depression_deg",
+    "unit": "deg",
+    "meaning": "Góc chúc của anten trong cấu hình clutter IQ.",
+    "practice": "5; không phải tilt_deg của radar thống kê."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "max_range_m",
+    "unit": "m",
+    "meaning": "Cự ly clutter lớn nhất của bài IQ.",
+    "practice": "5000; phải lớn hơn height và echo vừa PRI. Độc lập range_limits_m của cảnh."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "azimuth_span_deg",
+    "unit": "deg",
+    "meaning": "Độ rộng vùng clutter theo phương vị.",
+    "practice": "60; tăng có thể tăng số patch/tính toán."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "patch_azimuth_deg",
+    "unit": "deg",
+    "meaning": "Độ rộng patch theo phương vị để rời rạc hóa clutter.",
+    "practice": "5; patch nhỏ hơn thường tăng số phần tử mô hình cần tính."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "transmit_erp_w",
+    "unit": "W",
+    "meaning": "Tham số biên độ phát mà mã dùng bằng sqrt(giá trị) cho tín hiệu vào clutter.",
+    "practice": "1000; tên ERP trong UI không thay thế việc hiệu chuẩn chuỗi Pt/gain/loss/EIRP của radar thật."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "cfar_pfa",
+    "unit": "Xác suất không đơn vị",
+    "meaning": "Pfa yêu cầu của bộ CFAR trong bài IQ.",
+    "practice": "1e-4; không phải pfa của radar thống kê. Cell training=24, guard=4 đang cố định trong mã."
+  },
+  {
+    "group": "IQ — bài riêng",
+    "key": "steer_deg",
+    "unit": "deg",
+    "meaning": "Hướng steering dùng tính đồ thị đáp ứng ULA chuẩn hóa.",
+    "practice": "0→20; không beamform lại cube phát hiện đang xử lý, không lái chùm radar cảnh."
+  },
+  {
+    "group": "RX-R417C: cấu hình thiết bị mô phỏng",
+    "key": "profile",
+    "unit": "Chuỗi",
+    "meaning": "Hồ sơ mô phỏng thiết bị.",
+    "practice": "Generic hoặc RX-R417C; không phải kết nối phần cứng."
+  },
+  {
+    "group": "RX-R417C: cấu hình thiết bị mô phỏng",
+    "key": "operation",
+    "unit": "Chuỗi",
+    "meaning": "Search quét các mặt bật; Focus chỉ dùng một mặt và vùng chỉ định.",
+    "practice": "Nhập Search hoặc Focus. Focus không phải TAS bám tự động theo mục tiêu."
+  },
+  {
+    "group": "RX-R417C: cấu hình thiết bị mô phỏng",
+    "key": "face_offsets_deg",
+    "unit": "deg; 4 số",
+    "meaning": "Hướng tương đối của bốn mặt so với đế; dương theo quy ước ENU.",
+    "practice": "[0,90,180,270]; đế cân bằng: Đông, Bắc, Tây, Nam khi heading=0."
+  },
+  {
+    "group": "RX-R417C: cấu hình thiết bị mô phỏng",
+    "key": "faces_enabled",
+    "unit": "4 giá trị true/false",
+    "meaning": "Bật hoặc tắt từng mặt 1–4.",
+    "practice": "[true,false,false,false]; giữ ít nhất một mặt bật. Focus yêu cầu mặt được chọn đang bật."
+  },
+  {
+    "group": "RX-R417C: cấu hình thiết bị mô phỏng",
+    "key": "focus_face",
+    "unit": "Số nguyên 1..4",
+    "meaning": "Số hiệu mặt được dùng khi operation=Focus.",
+    "practice": "1→2 chuyển mặt; không tự đổi hướng UAV."
+  },
+  {
+    "group": "RX-R417C: cấu hình thiết bị mô phỏng",
+    "key": "focus_azimuth_deg",
+    "unit": "deg; [min,max]",
+    "meaning": "Hai biên phương vị vùng Focus trong khung mặt anten.",
+    "practice": "[-15,15]→[10,40]; không phải East/North mét."
+  },
+  {
+    "group": "RX-R417C: cấu hình thiết bị mô phỏng",
+    "key": "focus_elevation_deg",
+    "unit": "deg; [min,max]",
+    "meaning": "Hai biên góc ngẩng vùng Focus trong khung mặt.",
+    "practice": "[0,20]→[0,40] làm tăng số hướng nếu giữ chùm tối đa."
+  },
+  {
+    "group": "RX-R417C: cấu hình thiết bị mô phỏng",
+    "key": "scan_aware_tracking",
+    "unit": "true/false",
+    "meaning": "GNN/JPDA dùng vị trí track dự đoán để xét cơ hội quan sát trong chùm đang quét.",
+    "practice": "Không tính miss cho track ngoài chùm; không dùng truth. TOMHT/PHD chưa dùng cơ chế này; CSV nhập độc lập thiếu lịch chùm."
+  },
+  {
+    "group": "Hiển thị RC5",
+    "key": "OSM",
+    "unit": "true/false",
+    "meaning": "Bật lớp bản đồ gốc.",
+    "practice": "Chỉ hiển thị; không tạo vật cản hoặc clutter."
+  },
+  {
+    "group": "Hiển thị RC5",
+    "key": "Tỷ lệ cao độ",
+    "unit": "Auto hoặc hệ số ×1/3/6/12/20",
+    "meaning": "Tỷ lệ vẽ chiều đứng so với chiều ngang.",
+    "practice": "Mặc định Auto; tọa độ và số mét không đổi."
+  },
+  {
+    "group": "Hiển thị RC5",
+    "key": "Vùng quét",
+    "unit": "true/false",
+    "meaning": "Bật đường biên vùng phủ danh định.",
+    "practice": "Đường chấm khác đường liền chùm đang quan sát."
+  },
+  {
+    "group": "Hiển thị RC5",
+    "key": "Toàn tầm radar",
+    "unit": "true/false",
+    "meaning": "Mở rộng giới hạn trục ngang theo range tối đa.",
+    "practice": "Không mở rộng DEM và miền kiểm tra đường bay."
+  }
+]

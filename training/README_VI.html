@@ -1,0 +1,229 @@
+<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nội Bài • Toolbox Mastery</title><style>
+:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#eef2f6;color:#192a3b;font:17px/1.75 system-ui,Segoe UI,sans-serif}main{max-width:1120px;margin:35px auto;background:white;padding:48px 58px;border-top:8px solid #147d82;border-radius:12px}h1{font-size:42px;line-height:1.2;color:#103147}h2{font-size:25px;line-height:1.4;margin-top:45px;padding-top:20px;border-top:1px solid #dde7ef;color:#126b70}p{margin:16px 0}code{font:14px/1.6 Consolas,monospace;background:#eff4f7;padding:2px 5px;border-radius:4px}pre{background:#142b3d;color:#def1ed;padding:20px;overflow:auto;border-radius:8px;line-height:1.5}pre code{background:none;color:inherit;padding:0;white-space:pre}a{color:#076eaa}.table{overflow:auto}table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.55}td{vertical-align:top;border-bottom:1px solid #d9e4eb;padding:12px}tr:first-child{background:#e7f1f3;font-weight:700}tr:nth-child(even){background:#f7f9fb}li{margin-bottom:9px}.badge{font-size:12px;letter-spacing:2px;color:#147d82;font-weight:700}footer{padding-top:25px;color:#526977;font-size:13px}@media(max-width:700px){main{margin:0;padding:24px 18px;border-radius:0}h1{font-size:32px}td{min-width:140px}}@media print{body{background:white;font-size:11pt}main{max-width:none;padding:0;margin:0;border:0}pre{white-space:pre-wrap}h2{break-after:avoid}tr{break-inside:avoid}a{color:inherit}}
+</style><main><div class="badge">R2025a · 16 BÀI THỰC HÀNH · 19 SẢN PHẨM</div><h1>Nội Bài • Toolbox Mastery</h1>
+<p>Nhánh thực hành bổ sung cho <strong>NoiBai_Radar_v8_4_FULL_R2025a</strong>, hướng tới MATLAB R2025a. Giữ nguyên toàn bộ project gốc, 80 dataset, DEM và OSM. Điểm vào mới: <strong>START_TRAINING</strong>. Có 16 bài học phủ 19 sản phẩm trong ảnh của bạn, từ bài nền tảng đến bài mở rộng.</p>
+<p>Đây là bộ thực hành để học cách dùng công cụ và đọc kết quả. Không đồng nghĩa đã mô phỏng đầy đủ mọi chức năng của 19 toolbox, hay đã có mô hình radar/UAV thực được hiệu chuẩn. Trạng thái kiểm thử thực tế nằm trong <code>training/VALIDATION.md</code>.</p>
+<h2>1. Chạy lần đầu</h2>
+<ul>
+<li>Giải nén ZIP vào một thư mục mới, tránh trộn với các bản project cũ.</li>
+<li>Trong MATLAB, đặt Current Folder vào thư mục có <code>START_TRAINING.m</code>.</li>
+<li>Nhập các lệnh bên dưới. Không cần cài Python để chạy nhánh mới.</li>
+</ul>
+<pre><code>
+START_TRAINING
+
+training_check
+
+training_tests
+
+</code></pre>
+<p>Trong cửa sổ mở ra, chọn <strong>01_trajectory</strong>, bấm <strong>Chạy bài</strong>. Cấu hình JSON bên trái chính là cấu hình được dùng. Sau khi chạy, bấm <strong>Mở kết quả</strong>. Mỗi lần chạy tạo thư mục mới trong <code>results/training</code>, có bản chụp <code>config.json</code>, nhật ký <code>console.txt</code> và <code>status.json</code>.</p>
+<p><code>training_check</code> chỉ kiểm tra tìm thấy API trên path; không chứng minh license có thể sử dụng hoặc mô phỏng chạy thành công. <code>training_tests</code> có kiểm tra hình học, covariance, góc radar và dữ liệu xuất. Test Incomplete là chưa kiểm thử xong, không được tính PASS.</p>
+<p>Khi muốn chạy không mở giao diện:</p>
+<pre><code>
+addpath(pwd,fullfile(pwd,&#x27;src&#x27;),fullfile(pwd,&#x27;training&#x27;))
+
+r = training_run(&#x27;01_trajectory&#x27;);
+
+r = training_run(&#x27;03_radar&#x27;);
+
+dataset = fullfile(r.output,&#x27;training_native.mat&#x27;);
+
+view_dataset(dataset)
+
+training_benchmark(dataset,&#x27;baseline&#x27;,&#x27;light&#x27;)
+
+</code></pre>
+<p>Chạy thử cả 7 bài cốt lõi: <code>training_smoke</code>. Bài 04 chạy 160 scan với một GNN; thời gian tùy máy. Bài này có thể báo FAILED nếu mã tracker gốc hoặc license có lỗi; xem nhật ký thay vì hiểu FAILED là kết quả chất lượng thấp.</p>
+<p>Để chạy project cũ: <code>START_HERE</code>, <code>run_tests</code>, <code>run_mixed(&#x27;smoke&#x27;,&#x27;light&#x27;)</code>. Các lệnh cũ và cấu hình cũ được giữ nguyên.</p>
+<h2>2. Project gốc đang sử dụng gì?</h2>
+<p>Kết luận dưới đây dựa trên việc đọc các tệp <code>.m</code> và công cụ sinh dữ liệu <code>.py</code>, không phải thống kê runtime.</p>
+<div class="table"><table><tbody>
+<tr><td>Công cụ</td><td>Vai trò trong bản gốc</td><td>Thực hành trong nhánh mới</td></tr>
+<tr><td>MATLAB</td><td>Chạy mã, dữ liệu MAT, đồ thị, kiểm thử, báo cáo</td><td>Tất cả các bài, GUI, cấu hình, lưu kết quả</td></tr>
+<tr><td>Radar Toolbox</td><td>Chưa có lời gọi trực tiếp sinh radar native trong mã MATLAB gốc</td><td>03: radarDataGenerator, radarScenario, rcsSignature</td></tr>
+<tr><td>Phased Array System Toolbox</td><td>Chưa thấy chuỗi waveform/array native trong mã gốc</td><td>05: LFM, matched filter, CFAR; 06: ULA, steering</td></tr>
+<tr><td>Signal Processing Toolbox</td><td>Chưa thấy chuỗi xử lý tín hiệu riêng trong mã gốc</td><td>05: hann và phổ Doppler; FFT là MATLAB</td></tr>
+<tr><td>DSP System Toolbox</td><td>Chưa thấy bộ DSP System object trong mã gốc</td><td>05: dsp.FIRFilter làm mượt công suất</td></tr>
+<tr><td>Sensor Fusion and Tracking Toolbox</td><td>Thành phần chính: GNN, JPDA, TOMHT, PHD, EKF/UKF/IMM</td><td>04 và training_benchmark: dùng lại 17 tổ hợp</td></tr>
+<tr><td>Mapping Toolbox</td><td>Bản gốc đọc MAT đã chuẩn bị; không cần readgeoraster để xem map</td><td>02: GeoTIFF, WGS84 và đổi ENU sang địa lý</td></tr>
+<tr><td>UAV Toolbox</td><td>Quỹ đạo cũ sinh bằng Python; chưa có uavScenario</td><td>07: uavScenario, uavPlatform; 01: API quỹ đạo dùng chung</td></tr>
+<tr><td>Antenna Toolbox</td><td>Chưa thấy lời gọi trực tiếp</td><td>08: thiết kế dipole, tính pattern</td></tr>
+<tr><td>Communications Toolbox</td><td>Chưa thấy channel System object</td><td>05: comm.AWGNChannel</td></tr>
+<tr><td>Parallel Computing Toolbox</td><td>Các vòng benchmark gốc chạy tuần tự</td><td>11: serial/parfor cùng seed mỗi lượt</td></tr>
+<tr><td>Aerospace Toolbox</td><td>Chưa thấy mô hình khí quyển native</td><td>10: atmosisa, mật độ, Mach, vận tốc tương đối gió</td></tr>
+<tr><td>Aerospace Blockset</td><td>Chưa có mô hình SLX được nối vào pipeline</td><td>14: tạo khung 6DOF để tự cấu hình</td></tr>
+<tr><td>Navigation Toolbox</td><td>Chưa có sensor GPS/IMU trong pipeline</td><td>09: GPS và IMU; một số API chia sẻ giữa các toolbox</td></tr>
+<tr><td>Simulink</td><td>Project gốc chạy bằng script/function</td><td>13: tạo và chạy mô hình đáp ứng cao độ bậc nhất</td></tr>
+<tr><td>Simulink 3D Animation</td><td>Bản đồ gốc dùng đồ thị MATLAB</td><td>16: tạo world/actor; mở renderer bằng bước riêng</td></tr>
+<tr><td>Statistics and Machine Learning Toolbox</td><td>Mã cũ có matchpairs; cần kiểm tra gói cung cấp/license trên máy</td><td>11: normfit, histogram kết quả Monte Carlo</td></tr>
+<tr><td>Optimization Toolbox</td><td>Tuning gốc là thử danh sách ứng viên, không gọi optimizer liên tục</td><td>12: fmincon khớp sigma đo trên dữ liệu hiệu chuẩn giả lập</td></tr>
+<tr><td>MATLAB Coder</td><td>Chưa thấy bước sinh C/MEX</td><td>15: sinh C cho hàm đổi tọa độ; chưa biên dịch MEX</td></tr>
+</tbody></table></div>
+<p>Không cần ép tất cả toolbox vào một lần chạy. Chẳng hạn Coder phục vụ triển khai, còn Mapping phục vụ địa lý; chúng không tự nâng chất lượng tracking chỉ vì đã cài.</p>
+<h2>3. Ba luồng cần phân biệt</h2>
+<p><strong>Luồng điểm đo mới:</strong> cấu hình → waypointTrajectory → vị trí/vận tốc UAV → kiểm tra DEM/LOS → radarDataGenerator → dữ liệu MAT 20 cột → bộ bám gốc → OSPA/GOSPA/RMSE.</p>
+<p><strong>Luồng tín hiệu:</strong> LFM → trễ cự ly + Doppler giả lập một mục tiêu → AWGN → matched filter → FFT Doppler + CFAR. Đây là lab tín hiệu độc lập, chưa biến thành detection đầu vào của bộ bám. Chưa có link budget công suất phát/thu, clutter mặt đất, MTI, waveform propagation đầy đủ hoặc ghost đa đường trong lab này.</p>
+<p><strong>Luồng UAV/hệ thống:</strong> UAV platform, GPS/IMU, khí quyển, Simulink, 6DOF và 3D là các bài riêng để hiểu từng lớp. Mô hình Simulink bậc nhất và khung 6DOF chưa điều khiển quỹ đạo đầu vào của radar. Antenna pattern cũng chưa tự thay gain của radarDataGenerator.</p>
+<p>Vì vậy, đổi bandwidth ở bài 05 không tự đổi RangeResolution ở bài 03. Muốn đối chiếu, bạn chủ động chọn phân giải cự ly xấp xỉ c/(2B) và ghi giả định đó vào sổ thực nghiệm.</p>
+<h2>4. Tạo quỹ đạo và cấu hình UAV</h2>
+<p>Mở <code>training/config/default.json</code> hoặc dùng trình sửa JSON trong GUI. Mỗi phần tử <code>uavs</code> là một UAV. Mỗi hàng <code>waypoints_enu_m</code> gồm <strong>[Đông, Bắc, Cao]</strong>, đơn vị mét. <code>arrival_s</code> là thời gian đến từng điểm, bắt đầu từ 0 và phủ hết thời gian mô phỏng.</p>
+<pre><code>
+c = training_config;
+
+c.uavs(1).waypoints_enu_m = [600 -600 100; 1000 -300 160; 1600 -500 140];
+
+c.uavs(1).arrival_s = [0; 50; 101.76];
+
+c.uavs(1).rcs_m2 = 0.02;
+
+c.uavs(1).birth_scan = 1;
+
+c.uavs(1).death_scan = 140;
+
+training_validate(c)
+
+fid = fopen(&#x27;training/config/my_route.json&#x27;,&#x27;w&#x27;,&#x27;n&#x27;,&#x27;UTF-8&#x27;);
+
+fprintf(fid,&#x27;%s&#x27;,jsonencode(c,&#x27;PrettyPrint&#x27;,true)); fclose(fid);
+
+training_run(&#x27;01_trajectory&#x27;,&#x27;training/config/my_route.json&#x27;)
+
+training_run(&#x27;03_radar&#x27;,&#x27;training/config/my_route.json&#x27;)
+
+</code></pre>
+<p><code>rcs_m2</code> là diện tích phản xạ giả định, không phải khối lượng UAV. Bên trong radar, giá trị được đổi thành dBsm bằng 10*log10(rcs_m2). <code>speed_limit_mps</code> chỉ đặt giới hạn kiểm tra, không tự ép tốc độ: muốn bay chậm, tăng thời gian giữa các waypoint. Bộ nội suy có thể vượt tốc độ ước lượng từ đoạn thẳng; mã kiểm tra tốc độ tại các mẫu mô phỏng. Nó không chứng minh giới hạn liên tục giữa mọi mẫu.</p>
+<p><code>birth_scan/death_scan</code> lọc thời gian UAV tồn tại khi sinh điểm đo. Quỹ đạo vẫn được xác định trên toàn khoảng thời gian. Bài 01 và trình xem UAV ở bài 07 hiển thị đường đầy đủ để học hình học.</p>
+<p>Để tập hover, chọn <code>training/config/hover.json</code>. Để thêm UAV, nhân bản một phần tử trong mảng <code>uavs</code>, đổi tên, RCS, waypoint và thời gian. Các tên phải khác nhau. Bài 01 xuất bảng tốc độ/gia tốc để kiểm tra đường bay trước khi sinh điểm đo.</p>
+<h2>5. Cấu hình radar</h2>
+<div class="table"><table><tbody>
+<tr><td>Tham số</td><td>Ý nghĩa / đơn vị</td><td>Thử nghiệm nên làm</td></tr>
+<tr><td>position_enu_m</td><td>Vị trí anten [E,N,U], mét</td><td>Tăng độ cao radar, xem LOS đổi ra sao</td></tr>
+<tr><td>frequency_hz</td><td>Tần số Hz, mặc định 9.4 GHz</td><td>Ở lab 05/06, quan sát thay đổi bước sóng và Doppler</td></tr>
+<tr><td>reference_range_m</td><td>Cự ly mục tiêu tham chiếu, mét</td><td>Giữ RCS/Pd cố định, so số detection khi thay cự ly tham chiếu</td></tr>
+<tr><td>reference_rcs_m2</td><td>RCS tham chiếu m²</td><td>Phân biệt với RCS từng UAV</td></tr>
+<tr><td>detection_probability</td><td>Pd tại điều kiện tham chiếu</td><td>Thử 0.7 và 0.9; không xem đây là Pd cố định ở mọi cự ly</td></tr>
+<tr><td>false_alarms</td><td>Bật/tắt false alarms thống kê native</td><td>Mặc định false để học hình học trước</td></tr>
+<tr><td>false_alarm_probability</td><td>Pfa trên resolution cell</td><td>Không đồng nghĩa số clutter/scan của generator Python cũ</td></tr>
+<tr><td>field_of_view_deg</td><td>[góc phương vị, góc tà] tổng, độ</td><td>Thu hẹp FOV, kiểm tra UAV nào ra khỏi chùm</td></tr>
+<tr><td>range_limits_m</td><td>[cự ly gần, cự ly xa] mét</td><td>Chặn mục tiêu ngoài phạm vi</td></tr>
+<tr><td>range_resolution_m</td><td>Phân giải cự ly mét</td><td>So độ phân tách mục tiêu và bất định native</td></tr>
+<tr><td>azimuth_resolution_deg / elevation_resolution_deg</td><td>Phân giải góc độ</td><td>Thử tăng gấp đôi và so sai số vị trí xa radar</td></tr>
+</tbody></table></div>
+<p>Bài 03 dùng radar <strong>No scanning</strong>, hướng nhìn chính về phía Đông. Không phải radar quay 360°. Để nghiên cứu Rotator/Raster, mở <code>doc radarDataGenerator</code>, tạo cấu hình riêng và kiểm tra tốc độ cập nhật theo scan; không chỉ đổi một chữ rồi giữ nguyên giả định 0.64 s/scan của benchmark.</p>
+<p>Một radar thống kê dùng điểm tham chiếu Pd/RCS/cự ly không tương đương mô hình RF đầy đủ. Tần số chỉ được thay đổi không có nghĩa cự ly phát hiện sẽ thay theo một radar thật đã đo.</p>
+<h2>6. Cấu hình môi trường</h2>
+<p><code>terrain_los=true</code> bỏ mục tiêu bị DSM che trước khi gọi radar. <code>ray_samples=128</code> lấy mẫu dọc đường nhìn; <code>clearance_m=1</code> thêm biên cao độ. Đây là kiểm tra tia có lấy mẫu, có thể bỏ qua vật cản nhỏ giữa các mẫu. Không ray trace mặt đứng các tòa nhà OSM và không sinh đa đường.</p>
+<p><code>wind_enu_mps=[3,0,0]</code> ở bài 01/03 cộng trôi động học về Đông: p = p_waypoint + wind*t, v = v_waypoint + wind. Nó chưa mô phỏng lực khí động, bộ điều khiển giữ vị trí hoặc gió giật. Bài 07 yêu cầu gió bằng 0 vì đang dùng chuyển động waypoint native trực tiếp. Bài 10 tính khí quyển ISA và vận tốc tương đối gió.</p>
+<p>DEM đi kèm là Copernicus DSM, có thể gồm cây/công trình. Cao độ MAT là cao độ tương đối so với mốc gốc, không phải trực tiếp AGL, MSL hay ellipsoid. <code>AGL = z - terrain(E,N)</code>. Gốc MSL trong provenance là khoảng 13.108 m. Không cộng thêm độ cao công trình lên DSM khi chưa kiểm tra có tính hai lần hay không.</p>
+<p><code>origin_lla(3)=0</code> mặc định là <strong>giả định cao độ ellipsoid</strong> chỉ cho bài đổi tọa độ/GPS. DEM gốc dùng EGM2008 orthometric, còn WGS84 dùng ellipsoid: cần geoid separation và dữ liệu mốc thật nếu muốn tọa độ cao độ ngoài thực địa. Phép chiếu ngang MAT gốc cũng là xấp xỉ theo bán kính cong địa phương, không phải exact ECEF/ENU. Không tự đổi lat/lon của origin vì DEM gói này cố định vùng Nội Bài; chương trình sẽ báo lỗi khi mốc không khớp.</p>
+<h2>7. Mười sáu bài thực hành</h2>
+<p>Mỗi bài: chạy mốc → đổi một nhóm tham số → chạy vào thư mục mới → so sánh file/đồ thị → ghi kết luận và giới hạn. Các kết quả mong đợi dưới đây là mục tiêu quan sát, chưa phải kết quả đã đo từ máy này.</p>
+<div class="table"><table><tbody>
+<tr><td>Bài</td><td>Cách thao tác</td><td>Đầu ra / tiêu chí hiểu bài</td></tr>
+<tr><td>01_trajectory</td><td>Đổi waypoint, arrival_s, RCS riêng từng UAV; RCS chỉ tác động từ bài 03</td><td>trajectory.png, uav_01.csv; giải thích tốc độ/gia tốc và cao độ</td></tr>
+<tr><td>02_environment</td><td>Đổi cao radar, cao UAV, ray_samples; mở GeoTIFF và provenance</td><td>terrain_los.png, environment_01.csv; phân biệt ENU, AGL, datum</td></tr>
+<tr><td>03_radar</td><td>Đổi Pd, FOV, RCS, false_alarms</td><td>training_native.mat; quan sát số detection/scan và vùng mất đo</td></tr>
+<tr><td>04_tracking</td><td>Chạy một GNN; dùng training_benchmark để đổi họ tracker</td><td>tracking/summary.csv, frames.csv, tracking.png; đọc thiếu/thừa track và OSPA</td></tr>
+<tr><td>05_signal</td><td>Thay bandwidth, PRF, pulses, snr_db, target_radial_velocity_mps</td><td>range_doppler.png, signal.mat; hiểu phân giải, aliasing, matched-filter delay</td></tr>
+<tr><td>06_array</td><td>Đổi array_elements từ 8 lên 16, steer_deg từ 0 lên 30</td><td>beam.png; so bề rộng búp chính, sidelobe và góc cực đại</td></tr>
+<tr><td>07_uav</td><td>Chạy waypoint qua uavScenario; xem trainingUAVScenario trong workspace</td><td>uav_initial.png, uav_final.png; phân biệt platform và đường bay</td></tr>
+<tr><td>08_antenna</td><td>Đổi tần số và xem code tạo dipole; thử sửa hướng cắt pattern</td><td>antenna.png; phân biệt directivity/gain và array factor</td></tr>
+<tr><td>09_navigation</td><td>Đổi horizontal_accuracy_m, vertical_accuracy_m, velocity_accuracy_mps</td><td>gps.csv, navigation.mat; phân biệt truth với phép đo</td></tr>
+<tr><td>10_atmosphere</td><td>Đổi cao độ và gió</td><td>atmosphere.csv; đọc nhiệt độ, áp suất, mật độ, Mach</td></tr>
+<tr><td>11_montecarlo</td><td>Đổi trials, sigma_m; chạy thêm parallel.json</td><td>trials.csv, montecarlo.mat; phân biệt một seed và phân bố nhiều seed</td></tr>
+<tr><td>12_optimization</td><td>Đổi sigma_assumed_m, sigma_bounds_m</td><td>fit.mat; hiểu objective, bounds, exitflag, train và holdout</td></tr>
+<tr><td>13_simulink</td><td>Đổi time_constant_s và command_altitude_m</td><td>SLX tạo khi chạy, simulation.mat, altitude.png; hiểu solver và đáp ứng bậc nhất</td></tr>
+<tr><td>14_aerospace_blocks</td><td>Tạo SLX 6DOF, mở mask, nhập khối lượng/quán tính/lực/moment</td><td>Khung mô hình chưa chạy; tự nối gravity/lực khí động và Scope để luyện</td></tr>
+<tr><td>15_coder</td><td>Đọc training_polar_to_enu, chạy codegen rồi xem C/report</td><td>codegen/; mã nguồn C được sinh, chưa biên dịch/thử MEX</td></tr>
+<tr><td>16_3d</td><td>Tạo training3DWorld, rồi chạy viewer bằng lệnh dưới</td><td>World/actor trong workspace; chưa phát lại quỹ đạo hoặc nhập DEM/OSM</td></tr>
+</tbody></table></div>
+<pre><code>
+training_run(&#x27;16_3d&#x27;)
+
+run(training3DWorld,0.05,5)
+
+</code></pre>
+<p>Với 3D, cần renderer/driver và các thành phần cài đặt phù hợp của MATLAB. Không có scene sân bay Unreal tùy chỉnh được đóng kèm. Box mặc định chỉ là actor khởi đầu để học coordinate, transform và render; không đại diện UAV có động lực học.</p>
+<p>Bài 09 giữ cố định tư thế thân để tách tác động trọng lực/gia tốc khỏi bài toán attitude. Nó chưa phải bộ lọc INS/GNSS fusion. GPS và IMU đang độc lập, chưa đưa vào tracker radar. Khi đã hiểu, tiếp tục với <code>doc insfilterErrorState</code> hoặc ví dụ INS/GNSS chính thức và kiểm tra license cung cấp API.</p>
+<p>Bài 11 hiện đánh giá RMSE của nhiễu vị trí Gaussian, không chạy 100 benchmark radar. <code>parfor</code> dùng stream riêng theo seed để so chế độ serial/parallel. Chưa benchmark GPU. Bài 12 là hiệu chuẩn sigma Gaussian trên dữ liệu giả lập: 100 mẫu để fit, 60 mẫu giữ lại; chưa tự tìm Q/R cho tracker thật. Tuning Q/R của project có sẵn trong <code>run_mixed(&#x27;tune&#x27;,...)</code>.</p>
+<p>CFAR bài 05 dùng profile công suất tích lũy; dữ liệu sau matched filter có tương quan và tích lũy làm đổi phân bố. Pfa danh định trong lab không được báo cáo thành Pfa thực nghiệm đã hiệu chuẩn. Muốn đánh giá detector phải chạy nhiều dữ liệu noise-only và đếm false alarms.</p>
+<h2>8. Nối về benchmark gốc và luyện tuning</h2>
+<pre><code>
+r = training_run(&#x27;03_radar&#x27;,&#x27;training/config/false_alarms.json&#x27;);
+
+dataset = fullfile(r.output,&#x27;training_native.mat&#x27;);
+
+training_benchmark(dataset,&#x27;baseline&#x27;,&#x27;light&#x27;)
+
+training_benchmark(dataset,&#x27;tune&#x27;,&#x27;light&#x27;)
+
+% Chỉ sau khi bản light hoạt động tốt:
+
+training_benchmark(dataset,&#x27;tune&#x27;,&#x27;extended&#x27;)
+
+</code></pre>
+<p><code>light</code> gồm 3 GNN; <code>extended</code> gồm 17 tổ hợp. Bộ bám nhận cùng định dạng điểm đo như project cũ, không nhận nhãn truth. Adapter đổi tọa độ NED của radar và hướng anten sang ENU của project; giữ covariance và chuyển độ/radian theo hợp đồng 20 cột.</p>
+<p>Benchmark cũ bắt buộc <strong>160 scan</strong>, chia fit 1–100, selection 101–130, holdout 131–160. <code>training_generate</code> từ chối số scan khác để tránh đánh giá sai. Dữ liệu xuất dùng generator native mới, không thể coi là cùng phân bố với 80 file Python cũ. False alarm count native cũng khác clutter vùng 125/scan trong file mixed cũ. Không so hai điểm OSPA rồi quy nguyên nhân hoàn toàn cho thuật toán.</p>
+<p>Mở <code>config/tracker_config.json</code> để xem <code>measurement_variance_scale</code>, bất định vận tốc, process noise, gating, quản lý track và <code>temporal_support</code>. Nhánh thực hành không tự ghi đè file này. Muốn thử tham số, lưu bản sao trước, đổi một yếu tố, chạy vào output mới, giữ nguyên seed/dataset và ghi nhận cấu hình. Dùng bản Git baseline nếu cần đối chiếu. Không giảm clutter hoặc dùng truth lọc detections rồi kết luận tracker tốt hơn.</p>
+<p>Các nhãn TargetIndex từ radar chỉ dùng audit. <code>make_detections</code> tạo lại objectDetection với ObjectAttributes rỗng trước khi tracking. Giá trị Pd từng truth chưa được lấy từ native generator nên cột này để NaN, không bịa một giá trị chắc chắn.</p>
+<h2>9. Lộ trình để thành thạo</h2>
+<p><strong>Giai đoạn A – hình học và dữ liệu:</strong> làm 01, 02, 03, 07. Tự tạo 3 đường bay, một hover, một mục tiêu xuất hiện muộn. Chứng minh đơn vị và hệ tọa độ bằng một điểm tính tay.</p>
+<p><strong>Giai đoạn B – radar tín hiệu:</strong> làm 05, 06, 08. Tự dự đoán deltaR≈c/(2B), R_unamb≈c/(2PRF), |v|_unamb≈lambda*PRF/4, deltaV≈lambda*PRF/(2*Npulses). Đối chiếu đồ thị. Thêm một mục tiêu thứ hai là bài mở rộng tự triển khai, chưa nằm trong mô hình một mục tiêu mặc định.</p>
+<p><strong>Giai đoạn C – tracking:</strong> làm 04 và benchmark light. Thử noise mismatch, gating và temporal_support. Dùng dữ liệu seed mới để đánh giá thay vì chỉ chọn cấu hình tốt nhất trên một file.</p>
+<p><strong>Giai đoạn D – độ tin cậy và hiệu năng:</strong> làm 11, 12. Chạy nhiều seed, báo trung bình/độ phân tán và thất bại. Đưa chính tracker vào vòng Monte Carlo là bước mở rộng tiếp theo; không lấy bài nhiễu Gaussian thay cho phép thử tracker.</p>
+<p><strong>Giai đoạn E – hệ thống:</strong> làm 09, 10, 13 rồi mới tới 14–16. Trước khi ghép, viết hợp đồng dữ liệu: thời gian, ENU/NED/body, rad/deg, mét, chiều vector, covariance và độ trễ. Tiếp theo mới nối 6DOF→UAV→radar, IMU/GPS fusion, waveform→CFAR→detections và tối ưu hiệu năng C/MEX.</p>
+<p>Để tự đánh giá “đã hiểu”: bạn phải giải thích được tại sao kết quả thay đổi, biết khi nào mô hình không còn đúng, tái lập được kết quả từ config+seed và có một bài kiểm tra độc lập. Chạy hết 16 lệnh là khởi đầu, chưa phải thành thạo toàn bộ toolbox.</p>
+<h2>10. Đọc kết quả và xử lý lỗi</h2>
+<div class="table"><table><tbody>
+<tr><td>Trạng thái</td><td>Ý nghĩa</td></tr>
+<tr><td>PASS</td><td>Bài đã chạy xong trong lần thực thi đó; không phải chứng nhận độ chính xác vật lý</td></tr>
+<tr><td>FAILED</td><td>Có exception; xem status.json và console.txt; không đưa kết quả này vào so sánh thành công</td></tr>
+<tr><td>SKIPPED_MISSING_API</td><td>Smoke không tìm được API; chưa chạy bài</td></tr>
+<tr><td>BUILT_NOT_SIMULATED</td><td>Bài 14/16 chỉ dựng đối tượng hoặc mô hình, chưa chạy phần vật lý/renderer</td></tr>
+<tr><td>GENERATED_NOT_COMPILED</td><td>Bài 15 mới sinh C, chưa kiểm tra binary/MEX</td></tr>
+</tbody></table></div>
+<p><strong>Missing API:</strong> dùng <code>which radarDataGenerator -all</code>, <code>ver</code>, <code>doc radarDataGenerator</code>. Cài đặt đủ sản phẩm không đảm bảo license cho mọi API. Không có cơ chế im lặng thay toolbox bằng mock.</p>
+<p><strong>Invalid trajectory:</strong> kiểm tra thời gian tăng, số hàng waypoint khớp, đường nằm trong bounds/DEM, speed_limit. Kéo dài arrival_s hoặc giảm độ dài đường bay. Không chỉ tăng speed_limit để bỏ qua một cấu hình thiếu thực tế.</p>
+<p><strong>Radar/UAV below terrain:</strong> cao độ dùng z tương đối, không phải AGL; tăng z theo ground ở vị trí đó. Kiểm tra origin trước.</p>
+<p><strong>No reports:</strong> kiểm tra radar nhìn Đông, FOV, range limits, LOS, RCS và Pd. Đây có thể là kết quả hợp lệ. Nếu báo lỗi hợp đồng dữ liệu thì xem log; không thêm truth làm detections để làm đẹp hình.</p>
+<p><strong>Results belong to different settings:</strong> output benchmark cũ có chữ ký dữ liệu/config/code. Dùng thư mục mới; wrapper training_benchmark đã tự làm việc này.</p>
+<p><strong>MATLAB tự động không khởi động:</strong> môi trường đóng gói gặp <code>System Error: File system inconsistency</code> trước khi MATLAB chạy script. Đây là lý do chưa có PASS native kèm sẵn. Mở MATLAB bình thường trên máy, chạy <code>training_tests</code> và <code>training_smoke</code> để xác nhận; giữ lại log nếu lỗi tiếp diễn.</p>
+<h2>11. Cấu trúc và nhánh Git</h2>
+<pre><code>
+START_HERE.m                   Điểm vào gốc, không đổi
+
+START_TRAINING.m               Điểm vào GUI thực hành
+
+training/config/*.json         Mốc và 5 biến thể cấu hình
+
+training/training_run.m        Bộ chạy 16 bài
+
+training/training_generate.m   Native radar → MAT hợp đồng cũ
+
+training/training_benchmark.m  Nối sang run_mixed
+
+training/tests/                Kiểm thử cần chạy trong MATLAB
+
+training/VALIDATION.md          Những gì đã/chưa kiểm chứng
+
+training/README_VI.html         Hướng dẫn này, đọc offline
+
+data/                          Đủ 80 dataset + DEM + OSM gốc
+
+results/training/              Sinh khi bạn chạy bài
+
+</code></pre>
+<p>ZIP kèm kho Git cục bộ: <code>baseline-v8.4</code> là mã gốc, nhánh hiện tại <code>training/toolbox-mastery</code> thêm nhánh học. Thư mục <code>data/</code> được đóng đủ trong ZIP nhưng bỏ qua trong lịch sử Git để không nhân đôi dữ liệu lớn. <code>git diff baseline-v8.4..training/toolbox-mastery --stat</code> cho biết phần bổ sung. Không cần dùng Git để chạy project. Không có thay đổi nào được đẩy lên GitHub.</p>
+<p>File <code>FILE_MANIFEST.json</code> gốc được giữ nguyên để mô tả gói cũ. <code>TRAINING_MANIFEST.json</code> mới kiểm tra toàn bộ tệp nội dung bản mở rộng, không gồm thư mục <code>.git</code> và chính manifest. Bảo toàn ghi công Copernicus và OpenStreetMap trong <code>data/</code>.</p>
+<h2>12. Tài liệu MathWorks dùng để đối chiếu</h2>
+<p>Tài liệu cài tại máy R2025a là điểm đối chiếu chính; trang web trực tuyến có thể hiển thị bản MATLAB mới hơn. Dùng <code>doc tenAPI</code> trên R2025a để kiểm tra thuộc tính đúng phiên bản.</p>
+<ul>
+<li><a href="https://www.mathworks.com/help/releases/r2025a/pdf_doc/radar/radar_ref.pdf">Radar Toolbox R2025a Reference</a></li>
+<li><a href="https://www.mathworks.com/help/radar/ref/radardatagenerator-system-object.html">radarDataGenerator</a></li>
+<li><a href="https://www.mathworks.com/help/uav/ref/uavscenario.html">uavScenario</a></li>
+<li><a href="https://www.mathworks.com/help/uav/ref/uavplatform.html">uavPlatform và ReferenceFrame</a></li>
+<li><a href="https://www.mathworks.com/help/uav/ref/uavscenario.show3d.html">UAV show3D</a></li>
+<li><a href="https://www.mathworks.com/help/phased/ref/phased.linearfmwaveform.getmatchedfilter.html">LFM matched-filter coefficients</a></li>
+<li><a href="https://www.mathworks.com/help/aeroblks/6dofeulerangles.html">6DOF Euler Angles</a></li>
+<li><a href="https://www.mathworks.com/help/releases/r2025a/pdf_doc/sl3d/sl3d_ug.pdf">Simulink 3D Animation R2025a</a></li><footer>Nhánh học được bổ sung ngày 25/09/2026. Tham số mặc định là giả định thực hành. Xem VALIDATION.md để biết giới hạn kiểm thử.</footer></main></html>

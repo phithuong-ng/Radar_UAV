@@ -1,0 +1,8 @@
+MATLAB R2025a
+1. Giai nen FULL_RC5 vao thu muc moi.
+2. Current Folder: thu muc co START_NATIVE_LAB.m.
+3. NATIVE_LAB_CHECK
+4. NATIVE_LAB_TESTS('rx')
+5. START_NATIVE_LAB
+Huong dan: native_lab/docs/RX_R417C_RC5.html
+Runtime MATLAB chua duoc xac minh tai noi dong goi; xem RC5_VERIFICATION.json.

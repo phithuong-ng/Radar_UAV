@@ -1,0 +1,86 @@
+{
+  "version": "8.4-full",
+  "seed_base": 9100,
+  "seeds_per_scenario": 10,
+  "tuning_seed": 9100,
+  "validation_seeds": [
+    9101,
+    9102
+  ],
+  "evaluation_seeds": [
+    9103,
+    9104,
+    9105,
+    9106,
+    9107,
+    9108,
+    9109
+  ],
+  "frames": 160,
+  "cases": [
+    {
+      "name": "control_cv",
+      "targets": 6,
+      "motion": "cv",
+      "noise_multiplier": 1,
+      "clutter": "uniform",
+      "description_vi": "6 UAV bay thẳng, vận tốc không đổi"
+    },
+    {
+      "name": "motion_only",
+      "targets": 6,
+      "motion": "maneuver",
+      "noise_multiplier": 1,
+      "clutter": "uniform",
+      "description_vi": "6 UAV cơ động, tăng/giảm tốc và đứng yên"
+    },
+    {
+      "name": "measurement_only",
+      "targets": 6,
+      "motion": "cv",
+      "noise_multiplier": 4,
+      "clutter": "uniform",
+      "description_vi": "CV, độ lệch chuẩn nhiễu đo ×4 ở scan 45–75"
+    },
+    {
+      "name": "joint_mismatch",
+      "targets": 6,
+      "motion": "maneuver",
+      "noise_multiplier": 4,
+      "clutter": "uniform",
+      "description_vi": "Cơ động + nhiễu đo ×4; R báo đúng mức nhiễu"
+    },
+    {
+      "name": "regional_clutter",
+      "targets": 6,
+      "motion": "maneuver",
+      "noise_multiplier": 4,
+      "clutter": "regional",
+      "description_vi": "Cơ động + nhiễu đo ×4 + clutter 5 vùng"
+    },
+    {
+      "name": "dense_12",
+      "targets": 12,
+      "motion": "maneuver",
+      "noise_multiplier": 4,
+      "clutter": "regional",
+      "description_vi": "12 UAV cơ động, clutter 5 vùng"
+    },
+    {
+      "name": "paper_style_3",
+      "targets": 3,
+      "motion": "maneuver",
+      "noise_multiplier": 1,
+      "clutter": "uniform",
+      "description_vi": "3 UAV khác RCS; biến thể, không tái lập bài báo"
+    },
+    {
+      "name": "fast_uav_mixed",
+      "targets": 7,
+      "motion": "maneuver",
+      "noise_multiplier": 4,
+      "clutter": "regional",
+      "description_vi": "7 UAV hỗn hợp 0–150 m/s, có đoạn đứng yên"
+    }
+  ]
+}

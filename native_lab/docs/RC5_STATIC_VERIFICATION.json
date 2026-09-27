@@ -1,0 +1,41 @@
+{
+  "release": "RC5.2",
+  "matlab_release": "R2025a",
+  "runtime_execution": "NOT_EXECUTED: MATLAB startup failed before user code (File system inconsistency)",
+  "ui_visual_runtime_review": "NOT_EXECUTED: MATLAB startup failed",
+  "native_algorithms": "radarDataGenerator Electronic; uavScenario; Mapping; native trackers",
+  "hardware_connection": false,
+  "original_files_preserved_byte_for_byte": 150,
+  "original_datasets": 80,
+  "original_osm_layers": {
+    "road": 46133,
+    "runway": 381,
+    "taxiway": 2090,
+    "apron": 612,
+    "building_outlines": 2566
+  },
+  "code_analyzer": {
+    "files": 55,
+    "unreviewed_diagnostics": 0,
+    "nonfatal_style_and_performance_codes": {
+      "NOCOMMA": 19,
+      "ALIGN": 31,
+      "ISCL": 2,
+      "ASGLU": 1,
+      "MSNU": 11,
+      "AGROW": 4
+    },
+    "syntax_errors": 0
+  },
+  "rx_tests_authored": [
+    "testProfileAndFaceMounts",
+    "testLogicalFaceEditor",
+    "testFourFacesNativeDetectionAndPreviewAgreement",
+    "testPredictedVisibilityDoesNotCountUnilluminatedTracks",
+    "testSimulationPreservesFaceIDsAndArchiveScanState",
+    "testRXTrackersExecute",
+    "testOSMOverlayRebasesAndViewHasHeight"
+  ],
+  "native_helper_links": "PASS",
+  "guide_local_links": "PASS"
+}

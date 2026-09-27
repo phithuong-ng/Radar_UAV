@@ -1,0 +1,3 @@
+NoiBai v8.4 FULL R2025a
+80 generated MAT datasets; 8 scenarios x 10 seeds
+Native MATLAB execution not performed during packaging.

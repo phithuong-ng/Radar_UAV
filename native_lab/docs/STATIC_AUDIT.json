@@ -1,0 +1,250 @@
+{
+  "matlab_release": "R2025a",
+  "matlab_runtime": "NOT_EXECUTED_STARTUP_FAILED",
+  "startup_error": "System Error: File system inconsistency",
+  "code_analyzer_files": 47,
+  "code_analyzer_unreviewed": [],
+  "checks": [
+    {
+      "file": "native_lab/nl_app.m",
+      "exit_code": 0,
+      "messages": "L 112 (C 4): NOCOMMA: Extra comma is unnecessary.\r\nL 148 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 167.\r\nL 150 (C 4-5): ALIGN: This keyword might not be aligned with its matching END on line 154.\r\nL 164 (C 4-5): ALIGN: This keyword might not be aligned with its matching END on line 166.\r\nL 172 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 178 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 186.\r\nL 198 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 203.\r\nL 206 (C 12-27): ISCL: To improve performance, use 'isscalar' instead of length comparison.\r\nL 212 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 217.\r\nL 222 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 227.\r\nL 235 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 239.\r\nL 257 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 261 (C 12): NOCOMMA: Extra comma is unnecessary.\r\nL 276 (C 3-4): ALIGN: This keyword might not be aligned with its matching END on line 279.\r\nL 292 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 300.\r\nL 305 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 312.\r\nL 321 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 348 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 359 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 364.\r\nL 371 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 379 (C 12): NOCOMMA: Extra comma is unnecessary.\r\nL 385 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 390.\r\nL 404 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 407.\r\nL 413 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 419 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 425.\r\nL 432 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 438.\r\nL 446 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 458.\r\nL 463 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 469 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 477 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 487.\r\nL 624 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 630 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 643.\r\nL 632 (C 15-18): ASGLU: Value assigned to variable might be unused. Consider replacing the variable with ~ instead.\r\nL 658 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 662.\r\nL 676 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 680.\r\nL 685 (C 3-5): ALIGN: This keyword might not be aligned with its matching END on line 689.\r\nL 693 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 699 (C 6): NOCOMMA: Extra comma is unnecessary.\r\nL 717 (C 114-124): MSNU: A Code Analyzer message was once suppressed here, but the message is no longer generated."
+    },
+    {
+      "file": "native_lab/nl_apply_properties.m",
+      "exit_code": 0,
+      "messages": "L 17 (C 2-4): ALIGN: This keyword might not be aligned with its matching END on line 23."
+    },
+    {
+      "file": "native_lab/nl_archive.m",
+      "exit_code": 0,
+      "messages": "L 43 (C 124-134): MSNU: A Code Analyzer message was once suppressed here, but the message is no longer generated."
+    },
+    {
+      "file": "native_lab/nl_batch.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_commands.m",
+      "exit_code": 0,
+      "messages": "L 14 (C 5-6): ALIGN: This keyword might not be aligned with its matching END on line 17.\r\nL 15 (C 6-10): AGROW: Variable appears to change size on every loop iteration. Consider preallocating for speed.\r\nL 19 (C 5-9): AGROW: Variable appears to change size on every loop iteration. Consider preallocating for speed.\r\nL 21 (C 5-9): AGROW: Variable appears to change size on every loop iteration. Consider preallocating for speed.\r\nL 23 (C 5-9): AGROW: Variable appears to change size on every loop iteration. Consider preallocating for speed."
+    },
+    {
+      "file": "native_lab/nl_defaults.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_export.m",
+      "exit_code": 0,
+      "messages": "L 57 (C 121-131): MSNU: A Code Analyzer message was once suppressed here, but the message is no longer generated."
+    },
+    {
+      "file": "native_lab/nl_fields.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_ground.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_import_csv.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_init_filter.m",
+      "exit_code": 0,
+      "messages": "L 15 (C 2-3): ALIGN: This keyword might not be aligned with its matching END on line 17."
+    },
+    {
+      "file": "native_lab/nl_iq.m",
+      "exit_code": 0,
+      "messages": "L 12 (C 67-77): MSNU: A Code Analyzer message was once suppressed here, but the message is no longer generated."
+    },
+    {
+      "file": "native_lab/nl_legend.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_lessons.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_library.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_los.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_make_tracker.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_method_label.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_open_archive.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_positions.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_preset.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_preview.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_radar.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_rebase.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_registry.m",
+      "exit_code": 0,
+      "messages": "L 18 (C 42-52): ISCL: To improve performance, use 'isscalar' instead of length comparison."
+    },
+    {
+      "file": "native_lab/nl_root.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_run_label.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_set_agl.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_signature.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_simulate.m",
+      "exit_code": 0,
+      "messages": "L 5 (C 67-77): MSNU: A Code Analyzer message was once suppressed here, but the message is no longer generated."
+    },
+    {
+      "file": "native_lab/nl_storage.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_summary.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_terrain.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_timing_guard.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_track.m",
+      "exit_code": 0,
+      "messages": "L 13 (C 60-70): MSNU: A Code Analyzer message was once suppressed here, but the message is no longer generated."
+    },
+    {
+      "file": "native_lab/nl_tracking_defaults.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_tracking_keys.m",
+      "exit_code": 0,
+      "messages": "L 26 (C 1-2): ALIGN: This keyword might not be aligned with its matching END on line 32."
+    },
+    {
+      "file": "native_lab/nl_validate.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/nl_validate_tracking.m",
+      "exit_code": 0,
+      "messages": "L 3 (C 1-2): ALIGN: This keyword might not be aligned with its matching END on line 5."
+    },
+    {
+      "file": "native_lab/nl_value.m",
+      "exit_code": 0,
+      "messages": "L 5 (C 4): NOCOMMA: Extra comma is unnecessary."
+    },
+    {
+      "file": "native_lab/nl_viewshed.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "native_lab/tests/test_native_lab.m",
+      "exit_code": 0,
+      "messages": "L 173 (C 49-59): MSNU: A Code Analyzer message was once suppressed here, but the message is no longer generated.\r\nL 198 (C 17): NOCOMMA: Extra comma is unnecessary."
+    },
+    {
+      "file": "native_lab/tests/test_native_tracking.m",
+      "exit_code": 0,
+      "messages": "L 68 (C 17): NOCOMMA: Extra comma is unnecessary."
+    },
+    {
+      "file": "native_lab/tests/test_native_workflow.m",
+      "exit_code": 0,
+      "messages": "L 34 (C 73-83): MSNU: A Code Analyzer message was once suppressed here, but the message is no longer generated.\r\nL 58 (C 17): NOCOMMA: Extra comma is unnecessary."
+    },
+    {
+      "file": "START_NATIVE_LAB.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "NATIVE_LAB_CHECK.m",
+      "exit_code": 0,
+      "messages": ""
+    },
+    {
+      "file": "NATIVE_LAB_TESTS.m",
+      "exit_code": 0,
+      "messages": "L 5 (C 72-82): MSNU: A Code Analyzer message was once suppressed here, but the message is no longer generated.\r\nL 8 (C 1-2): ALIGN: This keyword might not be aligned with its matching END on line 13."
+    }
+  ],
+  "original_files_preserved_byte_for_byte": 150,
+  "original_datasets_preserved": 80,
+  "lessons": 16,
+  "new_native_m_files": 44,
+  "missing_local_function_references": [],
+  "runtime_tests_authored": 31
+}

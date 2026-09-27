@@ -1,0 +1,15 @@
+RC5.2 — Bố cục bản đồ và chú giải
+
+Bản đồ nằm bên trái; chú giải xếp dọc trong vùng riêng bên phải.
+Bố cục áp dụng cho cả 2D và 3D. Biểu đồ tốc độ/GOSPA nằm phía dưới.
+Không thay cấu hình mô phỏng, dataset hoặc thuật toán bám.
+
+Cập nhật từ RC5.1: đóng cửa sổ Native Lab, giải nén bản vá rồi chép
+nội dung thư mục NoiBai_Radar_v8_4_FULL_R2025a vào thư mục project cùng tên,
+chấp nhận thay các tệp trùng tên. Trong MATLAB chạy:
+clear functions
+START_NATIVE_LAB
+Thanh tiêu đề phải hiển thị RC5.2. Chuyển 2D/3D để kiểm tra bố cục.
+
+Đã kiểm tra cú pháp và toàn vẹn ZIP. Chưa chạy kiểm chứng giao diện vì
+MATLAB tại môi trường đóng gói lỗi khởi động trước khi thực thi mã.

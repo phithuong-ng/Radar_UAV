@@ -1,0 +1,49 @@
+{
+  "original_files": 150,
+  "missing_originals": [],
+  "changed_originals": [],
+  "terrain_variables": {
+    "east": [
+      1,
+      434
+    ],
+    "north": [
+      1,
+      361
+    ],
+    "height_msl": [
+      361,
+      434
+    ],
+    "terrain": [
+      361,
+      434
+    ],
+    "origin_lat": [
+      1,
+      1
+    ],
+    "origin_lon": [
+      1,
+      1
+    ],
+    "origin_height_msl": [
+      1,
+      1
+    ]
+  },
+  "preset_schema_and_waypoints_checked": [
+    "default.json",
+    "false_alarms.json",
+    "hover.json",
+    "parallel.json",
+    "weak_signal.json",
+    "wind_drift.json"
+  ],
+  "original_datasets": 80,
+  "original_mat_shapes_checked": 80,
+  "coordinate_algebra_check": "PASS (independent Python calculation; native API test remains pending)",
+  "matlab_static_analyzer_files": 19,
+  "matlab_static_syntax_errors": [],
+  "native_matlab_runtime": "NOT_RUN: launcher failed twice before script with File system inconsistency"
+}

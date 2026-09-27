@@ -1,0 +1,7 @@
+data/
+results/
+slprj/
+codegen/
+*.asv
+*.slxc
+__pycache__/

@@ -1,0 +1,6 @@
+function M=nl_rotation(y,p,r)
+% Local sensor axes -> parent NED axes (degrees).
+M=[cosd(y) -sind(y) 0;sind(y) cosd(y) 0;0 0 1]* ...
+ [cosd(p) 0 sind(p);0 1 0;-sind(p) 0 cosd(p)]* ...
+ [1 0 0;0 cosd(r) -sind(r);0 sind(r) cosd(r)];
+end

@@ -1,0 +1,10 @@
+NỘI BÀI — TOOLBOX MASTERY (R2025a)
+1. Mở MATLAB ở thư mục này.
+2. Gõ START_TRAINING.
+3. Đọc training/README_VI.html.
+4. Chạy training_tests, rồi training_smoke.
+
+Giữ nguyên 80 dataset và code gốc; thêm 16 bài thực hành.
+Nhánh Git hiện tại: training/toolbox-mastery; baseline: baseline-v8.4.
+Chưa xác nhận runtime MATLAB: công cụ khởi động gặp lỗi File system inconsistency.
+Kiểm tra tĩnh và toàn vẹn tệp: training/VALIDATION.md.

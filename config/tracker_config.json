@@ -1,0 +1,62 @@
+{
+  "description": "Environment-informed starting values, NOT empirically optimized. run_mixed tunes each native method and records actual results.",
+  "velocity_std_mps": 90,
+  "vertical_velocity_std_mps": 10,
+  "acceleration_std_mps2": 12,
+  "jerk_std_mps3": 8,
+  "turn_accel_std_degps2": 3,
+  "initial_accel_std_mps2": 20,
+  "initial_turn_std_degps": 8,
+  "imm_cv_accel_std": 1.5,
+  "imm_ca_jerk_std": 8,
+  "imm_ct_accel_std": 5,
+  "imm_stay_probability": 0.94,
+  "assignment_threshold": 25,
+  "coarse_gate_multiplier": 4,
+  "confirmation_history": [
+    6,
+    8
+  ],
+  "deletion_history": [
+    3,
+    5
+  ],
+  "max_tracks": 384,
+  "pd_assumed": 0.9,
+  "clutter_density_scale": 1,
+  "birth_rate_per_second": 0.15,
+  "jpda_max_events": 50,
+  "tomht_max_hypotheses": 12,
+  "tomht_max_branches": 3,
+  "tomht_history_scans": 3,
+  "tomht_confirmation": 12,
+  "tomht_deletion": -8,
+  "phd_death_rate": 0.01,
+  "phd_max_components": 1200,
+  "phd_extraction": 0.45,
+  "phd_confirmation": 0.65,
+  "measurement_variance_scale": 1,
+  "metric_cutoff_m": 300,
+  "max_run_seconds": 180,
+  "max_scan_seconds": 20,
+  "temporal_support": {
+    "enabled": true,
+    "max_lag_scans": 3,
+    "speed_limit_mps": 150,
+    "sigma_gate": 3.5
+  },
+  "tuning": {
+    "search_candidates": 6,
+    "finalists": 2,
+    "notes": "Train 1:100; select finalists on 101:130; report untouched 131:160. Warm history is causal. No global optimum claim."
+  },
+  "gnn_logic": "Score",
+  "score_confirmation": 15,
+  "score_deletion": -8,
+  "jpda_logic": "Integrated",
+  "existence_confirmation": 0.98,
+  "existence_deletion": 1e-05,
+  "phd_deletion_threshold": 0.0001,
+  "phd_merging_threshold": 16,
+  "phd_birth_assignment_threshold": 25
+}

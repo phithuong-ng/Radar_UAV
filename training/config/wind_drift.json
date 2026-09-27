@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "seed": 9201,
+  "frames": 160,
+  "dt": 0.64,
+  "origin_lla": [
+    21.2212,
+    105.8072,
+    0
+  ],
+  "bounds_enu_m": [
+    [
+      -3000,
+      5000
+    ],
+    [
+      -4000,
+      2000
+    ],
+    [
+      20,
+      500
+    ]
+  ],
+  "radar": {
+    "position_enu_m": [
+      0,
+      -500,
+      12
+    ],
+    "frequency_hz": 9400000000.0,
+    "reference_range_m": 3000,
+    "reference_rcs_m2": 0.01,
+    "detection_probability": 0.9,
+    "false_alarm_probability": 1e-06,
+    "false_alarms": false,
+    "field_of_view_deg": [
+      120,
+      60
+    ],
+    "range_limits_m": [
+      50,
+      8000
+    ],
+    "range_resolution_m": 15,
+    "azimuth_resolution_deg": 1,
+    "elevation_resolution_deg": 2
+  },
+  "environment": {
+    "terrain_los": true,
+    "ray_samples": 128,
+    "clearance_m": 1,
+    "wind_enu_mps": [
+      3,
+      0,
+      0
+    ]
+  },
+  "uavs": [
+    {
+      "name": "UAV_1",
+      "rcs_m2": 0.01,
+      "birth_scan": 1,
+      "death_scan": 160,
+      "speed_limit_mps": 150,
+      "waypoints_enu_m": [
+        [
+          600,
+          -600,
+          100
+        ],
+        [
+          1000,
+          -300,
+          130
+        ],
+        [
+          1500,
+          -500,
+          130
+        ],
+        [
+          2000,
+          -100,
+          160
+        ],
+        [
+          2500,
+          -500,
+          120
+        ]
+      ],
+      "arrival_s": [
+        0,
+        25,
+        50,
+        75,
+        101.76
+      ]
+    },
+    {
+      "name": "UAV_2",
+      "rcs_m2": 0.006,
+      "birth_scan": 1,
+      "death_scan": 160,
+      "speed_limit_mps": 150,
+      "waypoints_enu_m": [
+        [
+          2200,
+          -900,
+          160
+        ],
+        [
+          1900,
+          -400,
+          180
+        ],
+        [
+          1500,
+          -500,
+          180
+        ],
+        [
+          1100,
+          -200,
+          150
+        ],
+        [
+          800,
+          -600,
+          100
+        ]
+      ],
+      "arrival_s": [
+        0,
+        25,
+        50,
+        75,
+        101.76
+      ]
+    }
+  ],
+  "signal": {
+    "sample_rate_hz": 20000000.0,
+    "bandwidth_hz": 5000000.0,
+    "pulse_width_s": 1e-05,
+    "prf_hz": 2000,
+    "pulses": 32,
+    "target_range_m": 1200,
+    "target_radial_velocity_mps": 8,
+    "snr_db": 15,
+    "array_elements": 8,
+    "steer_deg": 20
+  },
+  "navigation": {
+    "horizontal_accuracy_m": 2,
+    "vertical_accuracy_m": 4,
+    "velocity_accuracy_mps": 0.1
+  },
+  "monte_carlo": {
+    "trials": 100,
+    "sigma_m": 10,
+    "use_parallel": false
+  },
+  "optimization": {
+    "sigma_assumed_m": 25,
+    "sigma_bounds_m": [
+      1,
+      100
+    ]
+  },
+  "simulink": {
+    "time_constant_s": 2,
+    "command_altitude_m": 100,
+    "stop_time_s": 20
+  }
+}
